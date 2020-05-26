@@ -1,0 +1,120 @@
+version: '3'
+
+networks:
+  kafka-net:
+    driver: bridge
+    
+services:
+  zookeeper:
+    build: 
+      context: ./broker
+      dockerfile: Dockerfile
+    image: custom/kafka/broker
+    container_name: zookeeper
+    networks:
+      - kafka-net
+    entrypoint: ["startKeeper.sh"]
+    ports:
+      - "2181:2181"
+  kafka-broker-1:
+    image: custom/kafka/broker
+    container_name: kafka-broker-1
+    networks:
+      - kafka-net
+    environment:
+      #- KAFKA_JMX_OPTS=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Djava.net.preferIPv4Stack=true -Dcom.sun.management.jmxremote.port=1099 -Dcom.sun.management.jmxremote.rmi.port=1099 -Djava.rmi.server.hostname=localhost -Dcom.sun.management.jmxremote.local.only=false
+      - PROM_AGENT_PORT=1123
+    command: ["1", "kafka-broker-1", "9093", "zookeeper", "2181"]
+    ports:
+      - "19093:19093"
+      #- "1099:1099"
+  kafka-broker-2:
+    image: custom/kafka/broker
+    container_name: kafka-broker-2
+    networks:
+      - kafka-net
+    environment:
+      - PROM_AGENT_PORT=1124
+    command: ["2", "kafka-broker-2", "9094", "zookeeper", "2181"]
+    ports:
+      - "19094:19094"
+  add-topic-1:
+    image: custom/kafka/broker
+    networks:
+      - kafka-net
+    entrypoint: ["addTopic.sh", "kafka-broker-1", "9093", "2", "2", "alltodos"]
+  add-topic-2:
+    image: custom/kafka/broker
+    networks:
+      - kafka-net
+    entrypoint: ["addTopic.sh", "kafka-broker-1", "9093", "2", "2", "completedtodos"]
+  schemaregistry:
+    build: 
+      context: ./schemaregistry
+      dockerfile: Dockerfile
+    image: custom/kafka/schemaregistry
+    container_name: schemaregistry
+    networks:
+      - kafka-net
+    command: ["zookeeper", "2181", "avro-schema-topic", "PLAINTEXT:\\/\\/kafka-broker-1:9093, PLAINTEXT:\\/\\/kafka-broker-2:9094"]
+    ports:
+      - "8081:8081"
+  ksqlserver:
+    build: 
+      context: ./ksql
+      dockerfile: Dockerfile
+    image: custom/kafka/ksql
+    container_name: ksqlserver
+    networks:
+      - kafka-net
+    command: ["zookeeper", "2181", "kafka-broker-1:9093, kafka-broker-2:9094", "schemaregistry", "8081"]
+    ports:
+      - "8088:8088"
+  dbhost:
+    image: mysql
+    container_name: mysql
+    networks:
+      - kafka-net
+    volumes:
+      - ./mysql:/etc/mysql/conf.d
+    environment:
+      - MYSQL_ROOT_PASSWORD=mroot
+      - MYSQL_DATABASE=todos
+      - MYSQL_USER=dbuser
+      - MYSQL_PASSWORD=db1234
+      - TZ=Europe/Istanbul
+    command: --default-authentication-plugin=mysql_native_password
+  kafkaconnect:
+    build: 
+      context: ./connect
+      dockerfile: Dockerfile
+    image: custom/kafka/connect
+    container_name: kafkaconnect
+    networks:
+      - kafka-net
+    command: ["zookeeper", "2181", "kafka-broker-1:9093, kafka-broker-2:9094", "http://schemaregistry:8081" , "dbhost", "3306"]
+  restproxy:
+    build: 
+      context: ./restproxy
+      dockerfile: Dockerfile
+    image: custom/kafka/restproxy
+    container_name: restproxy
+    networks:
+      - kafka-net
+    command: ["zookeeper", "2181", "PLAINTEXT:\\/\\/kafka-broker-1:9093, PLAINTEXT:\\/\\/kafka-broker-2:9094"]
+    ports:
+      - "8082:8082"
+  kmonitor:
+    build: 
+      context: ./monitor
+      dockerfile: Dockerfile
+    image: custom/kafka/monitor
+    container_name: kmonitor
+    networks:
+      - kafka-net
+    environment:
+      - KAFKA_JMX_ADDR='kafka-broker-1:1123','kafka-broker-2:1124'
+    ports:
+      - "9090:9090"
+      - "3000:3000"
+  

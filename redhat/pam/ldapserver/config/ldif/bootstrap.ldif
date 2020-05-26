@@ -1,0 +1,141 @@
+dn: ou=People,dc=corp,dc=com
+objectClass: top
+objectClass: organizationalUnit
+ou: People
+
+dn: ou=Groups,dc=corp,dc=com
+objectClass: top
+objectClass: organizationalUnit
+ou: Groups
+
+dn: uid=gitadmin,ou=People,dc=corp,dc=com
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+uid: gitadmin
+sn: Admin
+cn: Git
+userPassword: Abc123def!
+mail: gitadmin@corp.com
+
+dn: uid=pamadmin,ou=People,dc=corp,dc=com
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+uid: pamadmin
+sn: Admin
+cn: PAM
+userPassword: redhatpam1!
+mail: pamadmin@corp.com
+
+dn: uid=kieserver,ou=People,dc=corp,dc=com
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+uid: kieserver
+sn: Server
+cn: Kie
+userPassword: kieserver2!
+mail: kieserver@corp.com
+
+dn: uid=caseuser,ou=People,dc=corp,dc=com
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+uid: caseuser
+sn: User
+cn: Case
+userPassword: redhatpam1!
+mail: caseuser@corp.com
+
+dn: uid=casemanager,ou=People,dc=corp,dc=com
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+uid: casemanager
+sn: Manager
+cn: Case
+userPassword: redhatpam1!
+mail: casemanager@corp.com
+
+dn: uid=casesupplier,ou=People,dc=corp,dc=com
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+uid: casesupplier
+sn: Supplier
+cn: Case
+userPassword: redhatpam1!
+mail: casesupplier@corp.com
+
+dn: cn=gitadmin,ou=Groups,dc=corp,dc=com
+objectClass: top
+objectClass: groupOfUniqueNames
+cn: gitadmin
+uniqueMember: uid=gitadmin,ou=People,dc=corp,dc=com
+
+dn: cn=analyst,ou=Groups,dc=corp,dc=com
+objectClass: top
+objectClass: groupOfUniqueNames
+cn: analyst
+uniqueMember: uid=pamadmin,ou=People,dc=corp,dc=com
+
+dn: cn=admin,ou=Groups,dc=corp,dc=com
+objectClass: top
+objectClass: groupOfUniqueNames
+cn: admin
+uniqueMember: uid=pamadmin,ou=People,dc=corp,dc=com
+
+dn: cn=manager,ou=Groups,dc=corp,dc=com
+objectClass: top
+objectClass: groupOfUniqueNames
+cn: manager
+uniqueMember: uid=pamadmin,ou=People,dc=corp,dc=com
+uniqueMember: uid=casemanager,ou=People,dc=corp,dc=com
+
+dn: cn=user,ou=Groups,dc=corp,dc=com
+objectClass: top
+objectClass: groupOfUniqueNames
+cn: user
+uniqueMember: uid=pamadmin,ou=People,dc=corp,dc=com
+uniqueMember: uid=caseuser,ou=People,dc=corp,dc=com
+uniqueMember: uid=casemanager,ou=People,dc=corp,dc=com
+uniqueMember: uid=casesupplier,ou=People,dc=corp,dc=com
+
+dn: cn=kie-server,ou=Groups,dc=corp,dc=com
+objectClass: top
+objectClass: groupOfUniqueNames
+cn: kie-server
+uniqueMember: uid=pamadmin,ou=People,dc=corp,dc=com
+uniqueMember: uid=kieserver,ou=People,dc=corp,dc=com
+
+dn: cn=kiemgmt,ou=Groups,dc=corp,dc=com
+objectClass: top
+objectClass: groupOfUniqueNames
+cn: kiemgmt
+uniqueMember: uid=pamadmin,ou=People,dc=corp,dc=com
+
+dn: cn=rest-all,ou=Groups,dc=corp,dc=com
+objectClass: top
+objectClass: groupOfUniqueNames
+cn: rest-all
+uniqueMember: uid=pamadmin,ou=People,dc=corp,dc=com
+
+dn: cn=Administrators,ou=Groups,dc=corp,dc=com
+objectClass: top
+objectClass: groupOfUniqueNames
+cn: Administrators
+uniqueMember: uid=pamadmin,ou=People,dc=corp,dc=com
+
+dn: cn=supplier,ou=Groups,dc=corp,dc=com
+objectClass: top
+objectClass: groupOfUniqueNames
+cn: supplier
+uniqueMember: uid=pamadmin,ou=People,dc=corp,dc=com
+uniqueMember: uid=casesupplier,ou=People,dc=corp,dc=com

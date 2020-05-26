@@ -1,0 +1,74 @@
+version: '3'
+
+networks:
+  pam-net:
+    driver: bridge
+    
+services:
+  pam:
+    build: 
+      context: ./base
+      dockerfile: Dockerfile
+    image: custom/redhat/pam
+    container_name: redhat-pam
+    environment:
+      - TZ=Europe/Istanbul
+    networks:
+      - pam-net
+    ports:
+      - "9990:9990"
+      - "9999:9999"
+      - "8080:8080"
+      - "8001:8001"
+    depends_on:
+      - openldap
+      - gitserver
+      - mavenserver
+    command: ["openldap", "389", "uid=pamadmin,ou=People,dc=corp,dc=com", "redhatpam1!", "pamadmin", "redhatpam1!", "kieserver", "kieserver2!", "mavenserver", "8081"]
+  openldap:
+    container_name: openldap
+    image: osixia/openldap:1.3.0
+    networks:
+      - pam-net
+    volumes:
+      - ./ldapserver/config/ldif/bootstrap.ldif:/container/service/slapd/assets/config/bootstrap/ldif/50-bootstrap.ldif
+      - ./ldapserver/config/ldif/modify.ldif:/container/service/slapd/assets/config/bootstrap/ldif/custom/modify.ldif
+    environment:
+      - LDAP_ORGANISATION=The Corporation
+      - LDAP_DOMAIN=corp.com
+      - LDAP_ADMIN_PASSWORD=Ladm1234
+      - LDAP_LOG_LEVEL=256
+      - TZ=Europe/Istanbul
+    ports:
+      - "389:389"
+    command: ["--copy-service"]
+  gitserver:
+    build: 
+      context: ./gitserver
+      dockerfile: Dockerfile
+    image: custom/gitea
+    container_name: gitserver
+    networks:
+      - pam-net
+    environment:
+      - HTTP_PORT=3000
+      - TZ=Europe/Istanbul
+    depends_on:
+      - openldap
+    ports:
+       - "3000:3000"
+  mavenserver:
+    image: docker.bintray.io/jfrog/artifactory-oss:6.20.0
+    container_name: mavenserver
+    networks:
+      - pam-net
+    environment:
+      - TZ=Europe/Istanbul
+      - EXTRA_JAVA_OPTIONS=-Xms512m -Xmx1g
+    ports:
+       - "8081:8081"
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 32000
+        hard: 40000

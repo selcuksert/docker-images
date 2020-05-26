@@ -1,0 +1,9 @@
+CREATE STREAM todo_stream (userid BIGINT, title VARCHAR, status VARCHAR)
+WITH (KAFKA_TOPIC='alltodos', VALUE_FORMAT='AVRO');
+
+CREATE TABLE completed_todos
+AS SELECT userid, title, status, COUNT(*)
+FROM todo_stream
+WINDOW HOPPING ( SIZE 10 SECONDS, ADVANCE BY 1 SECOND )
+WHERE status='COMPLETED'
+GROUP BY userid, title, status;
