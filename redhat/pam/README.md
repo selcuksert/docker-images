@@ -23,6 +23,6 @@
     Example:
     ```sh
     cd Employee_Rostering
-	git remote add gitea http://rhpam:Rhpam1!@localhost:3000/rhpam/Employee_Rostering
+	git remote add gitea http://pamadmin:redhatpam1!@localhost:3000/rhpam/Employee_Rostering
 	git push gitea
     ```
