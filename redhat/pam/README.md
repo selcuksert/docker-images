@@ -1,4 +1,8 @@
 # RedHat Process Automation Manager
+
+## External Tooling Integration
+[PROJECT STORAGE AND BUILD OPTIONS WITH RED HAT PROCESS AUTOMATION MANAGER](https://access.redhat.com/documentation/en-us/red_hat_process_automation_manager/7.7/html/designing_your_decision_management_architecture_for_red_hat_process_automation_manager/project-storage-version-build-options-ref_decision-management-architecture) 
+
 ## Git Integration
 ### Manual Method
 * Clone project from BusinessCentral (Use RHPAM login user & pass):
