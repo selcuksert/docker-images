@@ -1,4 +1,4 @@
-FROM openjdk:12-alpine
+FROM openjdk:12
 
 LABEL Author="Selcuk SERT" mail="selcuk.sert@gmail.com"
 
@@ -18,7 +18,7 @@ ENV TZ=Europe/Istanbul
 ADD ./scripts/*.sh ${KAFKA_HOME}/bin/
 ADD ./config/*.properties ${KAFKA_HOME}/config/
 
-RUN apk --no-cache add bash && wget -q ${KAFKA_BIN_URL} && tar -xzf kafka_${ARCH_VERSION}.tgz -C ${KAFKA_ROOT}
+RUN yum install -y wget nc && wget -q ${KAFKA_BIN_URL} && tar -xzf kafka_${ARCH_VERSION}.tgz -C ${KAFKA_ROOT}
 
 RUN wget -q -P ${KAFKA_HOME}/libs/ https://packages.confluent.io/maven/io/confluent/kafka-schema-registry-client/${KAFKA_VERSION}/kafka-schema-registry-client-${KAFKA_VERSION}.jar && \
 wget -q -P ${KAFKA_HOME}/libs/ https://packages.confluent.io/maven/io/confluent/kafka-connect-avro-converter/${KAFKA_VERSION}/kafka-connect-avro-converter-${KAFKA_VERSION}.jar && \

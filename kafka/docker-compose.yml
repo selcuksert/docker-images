@@ -38,12 +38,42 @@ services:
     command: ["2", "kafka-broker-2", "9094", "zookeeper", "2181"]
     ports:
       - "19094:19094"
-  add-topic-1:
+  add-topic-notification:
+    image: custom/kafka/broker
+    networks:
+      - kafka-net
+    entrypoint: ["addTopic.sh", "kafka-broker-1", "9093", "2", "2", "notification"]
+  add-topic-consent:
+    image: custom/kafka/broker
+    networks:
+      - kafka-net
+    entrypoint: ["addTopic.sh", "kafka-broker-1", "9093", "2", "2", "consent"]
+  add-topic-mdmbridge:
+    image: custom/kafka/broker
+    networks:
+      - kafka-net
+    entrypoint: ["addTopic.sh", "kafka-broker-1", "9093", "2", "2", "mdmbridge"]
+  add-topic-inventory:
+    image: custom/kafka/broker
+    networks:
+      - kafka-net
+    entrypoint: ["addTopic.sh", "kafka-broker-1", "9093", "2", "2", "inventory"]
+  add-topic-items:
+    image: custom/kafka/broker
+    networks:
+      - kafka-net
+    entrypoint: ["addTopic.sh", "kafka-broker-1", "9093", "2", "2", "items"]
+  add-topic-cart:
+    image: custom/kafka/broker
+    networks:
+      - kafka-net
+    entrypoint: ["addTopic.sh", "kafka-broker-1", "9093", "2", "2", "cart"]
+  add-topic-alltodos:
     image: custom/kafka/broker
     networks:
       - kafka-net
     entrypoint: ["addTopic.sh", "kafka-broker-1", "9093", "2", "2", "alltodos"]
-  add-topic-2:
+  add-topic-completedtodos:
     image: custom/kafka/broker
     networks:
       - kafka-net
@@ -79,7 +109,7 @@ services:
       - ./mysql:/etc/mysql/conf.d
     environment:
       - MYSQL_ROOT_PASSWORD=mroot
-      - MYSQL_DATABASE=todos
+      - MYSQL_DATABASE=notification
       - MYSQL_USER=dbuser
       - MYSQL_PASSWORD=db1234
       - TZ=Europe/Istanbul
@@ -90,6 +120,11 @@ services:
       dockerfile: Dockerfile
     image: custom/kafka/connect
     container_name: kafkaconnect
+    environment:
+      - TOPIC_NAMES=notification
+      - DB_NAME=notification
+      - CONNECTION_USER=dbuser
+      - CONNECTION_PASSWORD=db1234
     networks:
       - kafka-net
     command: ["zookeeper", "2181", "kafka-broker-1:9093, kafka-broker-2:9094", "http://schemaregistry:8081" , "dbhost", "3306"]
