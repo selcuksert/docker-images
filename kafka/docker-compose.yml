@@ -154,14 +154,16 @@ services:
       - dbservice
       - schemaregistry
     environment:
-      - TOPIC_NAMES=notification,consent,mdmbridge
+      - TOPIC_NAMES=inventory
       - DB_NAME=kafkaconnect
       - CONNECTION_USER=dbuser
       - CONNECTION_PASSWORD=db1234
-      - KEY_CONVERTER=org.apache.kafka.connect.storage.StringConverter
+      - KEY_CONVERTER=org.apache.kafka.connect.converters.LongConverter
       - VALUE_CONVERTER=io.confluent.connect.avro.AvroConverter
     networks:
       - kafka-net
+    ports:
+      - "8083:8083"
     command: ["zookeeper", "2181", "kafka-broker-1:9093, kafka-broker-2:9094", "http://schemaregistry:8081" , "dbservice", "3306"]
   restproxy:
     build: 

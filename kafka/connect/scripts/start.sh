@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 ZOOKEEPER_HOST=$1
 ZOOKEEPER_PORT=$2
@@ -21,7 +21,14 @@ sed "s/CONNECTION_PASSWORD/$CONNECTION_PASSWORD/g" -i $KAFKA_HOME/config/mysql-c
 
 sed "s/value.converter=org.apache.kafka.connect.json.JsonConverter/value.converter=$VALUE_CONVERTER/g" \
 -i $KAFKA_HOME/config/connect-standalone.properties
-echo "value.converter.schema.registry.url=$SR_URL" >> $KAFKA_HOME/config/connect-standalone.properties
+
+if [[ $KEY_CONVERTER == *"Avro"* ]]; then
+  echo "key.converter.schema.registry.url=$SR_URL" >> $KAFKA_HOME/config/connect-standalone.properties
+fi
+
+if [[ $VALUE_CONVERTER == *"Avro"* ]]; then
+  echo "value.converter.schema.registry.url=$SR_URL" >> $KAFKA_HOME/config/connect-standalone.properties
+fi
 
 echo "plugin.path=${KAFKA_HOME}/plugins" >> $KAFKA_HOME/config/connect-standalone.properties
 
@@ -36,6 +43,5 @@ do
     echo "$DB_HOST:$DB_PORT is NOT Alive"
 	sleep 3
 done
-
 
 connect-standalone.sh $KAFKA_HOME/config/connect-standalone.properties $KAFKA_HOME/config/mysql-connector.properties
