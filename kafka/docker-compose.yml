@@ -14,76 +14,87 @@ services:
     networks:
       - kafka-net
     entrypoint: ["startKeeper.sh"]
+    environment:
+      - PROM_AGENT_PORT=1123
     ports:
       - "2181:2181"
   kafka-broker-1:
+    build: 
+      context: ./broker
+      dockerfile: Dockerfile
     image: custom/kafka/broker
     container_name: kafka-broker-1
+    links:
+      - zookeeper
+    depends_on:
+      - zookeeper
     networks:
       - kafka-net
     environment:
       #- KAFKA_JMX_OPTS=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Djava.net.preferIPv4Stack=true -Dcom.sun.management.jmxremote.port=1099 -Dcom.sun.management.jmxremote.rmi.port=1099 -Djava.rmi.server.hostname=localhost -Dcom.sun.management.jmxremote.local.only=false
-      - PROM_AGENT_PORT=1123
-    command: ["1", "kafka-broker-1", "9093", "zookeeper", "2181"]
+      - PROM_AGENT_PORT=1124
+    command: ["zookeeper", "2181", "1", "kafka-broker-1", "9093"]
     ports:
       - "19093:19093"
       #- "1099:1099"
   kafka-broker-2:
+    build: 
+      context: ./broker
+      dockerfile: Dockerfile
     image: custom/kafka/broker
     container_name: kafka-broker-2
+    links:
+      - zookeeper
+    depends_on:
+      - zookeeper
     networks:
       - kafka-net
     environment:
-      - PROM_AGENT_PORT=1124
-    command: ["2", "kafka-broker-2", "9094", "zookeeper", "2181"]
+      - PROM_AGENT_PORT=1125
+    command: ["zookeeper", "2181", "2", "kafka-broker-2", "9094"]
     ports:
       - "19094:19094"
-  add-topic-notification:
+  add-topics-notification:
     image: custom/kafka/broker
+    links:
+      - kafka-broker-1
+    depends_on:
+      - kafka-broker-1
     networks:
       - kafka-net
-    entrypoint: ["addTopic.sh", "kafka-broker-1", "9093", "2", "2", "notification"]
-  add-topic-consent:
+    entrypoint: ["addTopic.sh", "kafka-broker-1", "9093", "2", "2", "notification,consent,mdmbridge"]
+  add-topics-shop:
     image: custom/kafka/broker
+    links:
+      - kafka-broker-1
+    depends_on:
+      - kafka-broker-1
     networks:
       - kafka-net
-    entrypoint: ["addTopic.sh", "kafka-broker-1", "9093", "2", "2", "consent"]
-  add-topic-mdmbridge:
+    entrypoint: ["addTopic.sh", "kafka-broker-1", "9093", "2", "2", "items,cart"]
+  add-topics-todos:
     image: custom/kafka/broker
+    links:
+      - kafka-broker-1
+    depends_on:
+      - kafka-broker-1
     networks:
       - kafka-net
-    entrypoint: ["addTopic.sh", "kafka-broker-1", "9093", "2", "2", "mdmbridge"]
-  add-topic-inventory:
-    image: custom/kafka/broker
-    networks:
-      - kafka-net
-    entrypoint: ["addTopic.sh", "kafka-broker-1", "9093", "2", "2", "inventory"]
-  add-topic-items:
-    image: custom/kafka/broker
-    networks:
-      - kafka-net
-    entrypoint: ["addTopic.sh", "kafka-broker-1", "9093", "2", "2", "items"]
-  add-topic-cart:
-    image: custom/kafka/broker
-    networks:
-      - kafka-net
-    entrypoint: ["addTopic.sh", "kafka-broker-1", "9093", "2", "2", "cart"]
-  add-topic-alltodos:
-    image: custom/kafka/broker
-    networks:
-      - kafka-net
-    entrypoint: ["addTopic.sh", "kafka-broker-1", "9093", "2", "2", "alltodos"]
-  add-topic-completedtodos:
-    image: custom/kafka/broker
-    networks:
-      - kafka-net
-    entrypoint: ["addTopic.sh", "kafka-broker-1", "9093", "2", "2", "completedtodos"]
+    entrypoint: ["addTopic.sh", "kafka-broker-1", "9093", "2", "2", "alltodos,completedtodos"]
   schemaregistry:
     build: 
       context: ./schemaregistry
       dockerfile: Dockerfile
     image: custom/kafka/schemaregistry
     container_name: schemaregistry
+    links:
+      - zookeeper
+      - kafka-broker-1
+      - kafka-broker-2
+    depends_on:
+      - zookeeper
+      - kafka-broker-1
+      - kafka-broker-2
     networks:
       - kafka-net
     command: ["zookeeper", "2181", "avro-schema-topic", "PLAINTEXT:\\/\\/kafka-broker-1:9093, PLAINTEXT:\\/\\/kafka-broker-2:9094"]
@@ -95,12 +106,22 @@ services:
       dockerfile: Dockerfile
     image: custom/kafka/ksql
     container_name: ksqlserver
+    links:
+      - zookeeper
+      - kafka-broker-1
+      - kafka-broker-2
+      - schemaregistry
+    depends_on:
+      - zookeeper
+      - kafka-broker-1
+      - kafka-broker-2
+      - schemaregistry
     networks:
       - kafka-net
     command: ["zookeeper", "2181", "kafka-broker-1:9093, kafka-broker-2:9094", "schemaregistry", "8081"]
     ports:
       - "8088:8088"
-  dbhost:
+  dbservice:
     image: mysql
     container_name: mysql
     networks:
@@ -109,7 +130,7 @@ services:
       - ./mysql:/etc/mysql/conf.d
     environment:
       - MYSQL_ROOT_PASSWORD=mroot
-      - MYSQL_DATABASE=notification
+      - MYSQL_DATABASE=kafkaconnect
       - MYSQL_USER=dbuser
       - MYSQL_PASSWORD=db1234
       - TZ=Europe/Istanbul
@@ -120,20 +141,42 @@ services:
       dockerfile: Dockerfile
     image: custom/kafka/connect
     container_name: kafkaconnect
+    links:
+      - zookeeper
+      - kafka-broker-1
+      - kafka-broker-2
+      - dbservice
+      - schemaregistry
+    depends_on:
+      - zookeeper
+      - kafka-broker-1
+      - kafka-broker-2
+      - dbservice
+      - schemaregistry
     environment:
-      - TOPIC_NAMES=notification
-      - DB_NAME=notification
+      - TOPIC_NAMES=notification,consent,mdmbridge
+      - DB_NAME=kafkaconnect
       - CONNECTION_USER=dbuser
       - CONNECTION_PASSWORD=db1234
+      - KEY_CONVERTER=org.apache.kafka.connect.storage.StringConverter
+      - VALUE_CONVERTER=io.confluent.connect.avro.AvroConverter
     networks:
       - kafka-net
-    command: ["zookeeper", "2181", "kafka-broker-1:9093, kafka-broker-2:9094", "http://schemaregistry:8081" , "dbhost", "3306"]
+    command: ["zookeeper", "2181", "kafka-broker-1:9093, kafka-broker-2:9094", "http://schemaregistry:8081" , "dbservice", "3306"]
   restproxy:
     build: 
       context: ./restproxy
       dockerfile: Dockerfile
     image: custom/kafka/restproxy
     container_name: restproxy
+    links:
+      - zookeeper
+      - kafka-broker-1
+      - kafka-broker-2
+    depends_on:
+      - zookeeper
+      - kafka-broker-1
+      - kafka-broker-2
     networks:
       - kafka-net
     command: ["zookeeper", "2181", "PLAINTEXT:\\/\\/kafka-broker-1:9093, PLAINTEXT:\\/\\/kafka-broker-2:9094"]
@@ -145,10 +188,18 @@ services:
       dockerfile: Dockerfile
     image: custom/kafka/monitor
     container_name: kmonitor
+    links:
+      - zookeeper
+      - kafka-broker-1
+      - kafka-broker-2
+    depends_on:
+      - zookeeper
+      - kafka-broker-1
+      - kafka-broker-2
     networks:
       - kafka-net
     environment:
-      - KAFKA_JMX_ADDR='kafka-broker-1:1123','kafka-broker-2:1124'
+      - KAFKA_JMX_ADDR='zookeeper:1123','kafka-broker-1:1124','kafka-broker-2:1125'
     ports:
       - "9090:9090"
       - "3000:3000"

@@ -1,5 +1,5 @@
 curl -i -X POST -H "Accept:application/json" -H "Content-Type:application/json" localhost:8083/connectors -d '{
-"name": "todos-cdc-connector",
+"name": "db-cdc-connector",
 "config": {
 "connector.class": "io.debezium.connector.mysql.MySqlConnector",
 "tasks.max": "1",
@@ -12,15 +12,15 @@ curl -i -X POST -H "Accept:application/json" -H "Content-Type:application/json" 
 "database.user": "dbuser",
 "database.password": "db1234",
 "database.server.id": "123456",
-"database.server.name": "todos",
-"database.whitelist": "todos",
+"database.server.name": "db",
+"database.whitelist": "db",
 "database.history.kafka.bootstrap.servers": "kafka-broker-1:9093, kafka-broker-2:9094",
 "database.history.kafka.topic": "schema-changes" } 
 }'
 
-curl -i -X DELETE -H "Accept:application/json" -H "Content-Type:application/json" localhost:8083/connectors/todos-cdc-connector
+curl -i -X DELETE -H "Accept:application/json" -H "Content-Type:application/json" localhost:8083/connectors/db-cdc-connector
 
 docker exec -it mysql mysql -uroot -pmroot
 GRANT SELECT, RELOAD, SHOW DATABASES, REPLICATION SLAVE, REPLICATION CLIENT ON *.* TO 'dbuser';
-GRANT ALL PRIVILEGES ON todos.* TO 'dbuser'@'%';
+GRANT ALL PRIVILEGES ON db.* TO 'dbuser'@'%';
 

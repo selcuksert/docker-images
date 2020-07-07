@@ -1,10 +1,14 @@
 #!/bin/bash
 
-BROKER_ID=$1
-NODE_HOST=$2
-NODE_PORT=$3
-ZOOKEEPER_HOST=$4
-ZOOKEEPER_PORT=$5
+if [[ $# -ne 5 ]]; then
+    echo "Illegal number of parameters"
+    exit 2
+fi
+ZOOKEEPER_HOST=$1
+ZOOKEEPER_PORT=$2
+BROKER_ID=$3
+NODE_HOST=$4
+NODE_PORT=$5
 
 cat ${KAFKA_HOME}/config/server.properties | \
 awk -v BROKER_ID=$BROKER_ID '{sub(/broker.id=0/,"broker.id="BROKER_ID)}1' | \

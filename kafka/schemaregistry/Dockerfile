@@ -1,8 +1,11 @@
-FROM maven:3-alpine
+FROM maven:3-openjdk-14-slim
 
-LABEL Author="Selcuk SERT" mail="selcuk.sert@gmail.com"
+LABEL author="Selcuk SERT"
+LABEL mail="selcuk.sert@gmail.com"
+LABEL version="1.0"
+LABEL description="Custom image based on Confluent Schema Registry"
 
-ARG VERSION=v5.4.1
+ARG VERSION=v5.4.2
 ARG PROJECT_NAME=schema-registry
 ARG SR_SRC_HOME=https://github.com/confluentinc/${PROJECT_NAME}.git
 
@@ -13,9 +16,7 @@ ENV TZ=Europe/Istanbul
 
 EXPOSE 8081
 
-RUN apk --update add git bash && \
-    rm -rf /var/lib/apt/lists/* && \
-    rm /var/cache/apk/*
+RUN apt-get update && apt-get install -y git netcat
 
 WORKDIR ${SR_ROOT}
 

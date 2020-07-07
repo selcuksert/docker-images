@@ -2,8 +2,8 @@ FROM ubuntu
 
 LABEL Author="Selcuk SERT" mail="selcuk.sert@gmail.com"
 
-ARG PRM_RELEASE=2.17.2
-ARG GRF_RELEASE=6.7.3
+ARG PRM_RELEASE=2.19.2
+ARG GRF_RELEASE=7.0.5
 ENV TZ=Europe/Istanbul
 
 RUN apt-get update && \
