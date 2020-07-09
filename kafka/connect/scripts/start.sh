@@ -6,18 +6,19 @@ KAFKA_BS_SERVERS=$3
 SR_URL=$4
 DB_HOST=$5
 DB_PORT=$6
+DB_TYPE=$7
 
 sed "s/bootstrap.servers=localhost:9092/bootstrap.servers=$KAFKA_BS_SERVERS/g" -i $KAFKA_HOME/config/connect-standalone.properties
 
 sed "s/key.converter=org.apache.kafka.connect.json.JsonConverter/key.converter=$KEY_CONVERTER/g" \
 -i $KAFKA_HOME/config/connect-standalone.properties
 
-export CONNECTION_URL="jdbc:mysql:\\/\\/$DB_HOST:$DB_PORT\\/$DB_NAME"
+export CONNECTION_URL="jdbc:$DB_TYPE:\\/\\/$DB_HOST:$DB_PORT\\/$DB_NAME"
 
-sed "s/TOPIC_NAMES/$TOPIC_NAMES/g" -i $KAFKA_HOME/config/mysql-connector.properties
-sed "s/CONNECTION_URL/$CONNECTION_URL/g" -i $KAFKA_HOME/config/mysql-connector.properties
-sed "s/CONNECTION_USER/$CONNECTION_USER/g" -i $KAFKA_HOME/config/mysql-connector.properties
-sed "s/CONNECTION_PASSWORD/$CONNECTION_PASSWORD/g" -i $KAFKA_HOME/config/mysql-connector.properties
+sed "s/TOPIC_NAMES/$TOPIC_NAMES/g" -i $KAFKA_HOME/config/jdbc-sink-connector.properties
+sed "s/CONNECTION_URL/$CONNECTION_URL/g" -i $KAFKA_HOME/config/jdbc-sink-connector.properties
+sed "s/CONNECTION_USER/$CONNECTION_USER/g" -i $KAFKA_HOME/config/jdbc-sink-connector.properties
+sed "s/CONNECTION_PASSWORD/$CONNECTION_PASSWORD/g" -i $KAFKA_HOME/config/jdbc-sink-connector.properties
 
 sed "s/value.converter=org.apache.kafka.connect.json.JsonConverter/value.converter=$VALUE_CONVERTER/g" \
 -i $KAFKA_HOME/config/connect-standalone.properties
@@ -44,4 +45,4 @@ do
 	sleep 3
 done
 
-connect-standalone.sh $KAFKA_HOME/config/connect-standalone.properties $KAFKA_HOME/config/mysql-connector.properties
+connect-standalone.sh $KAFKA_HOME/config/connect-standalone.properties $KAFKA_HOME/config/jdbc-sink-connector.properties

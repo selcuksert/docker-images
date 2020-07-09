@@ -7,8 +7,10 @@ LABEL description="Custom image based on Kafka Connect"
 
 ARG CONFL_KAFKA_VERSION=5.4.2
 ARG AVRO_KAFKA_VERSION=1.10.0
-ARG MYSQL_CON_KAFKA_VERSION=8.0.20
+ARG MYSQL_JDBC_VERSION=8.0.20
+ARG PGSQL_JDBC_VER=42.2.14
 ARG DEBEZIUM_CON_KAFKA_VERSION=1.2.0.Final
+
 ENV KAFKA_VERSION=2.5.0
 ENV ARCH_KAFKA_VERSION=2.13-${KAFKA_VERSION}
 ENV JMX_AGENT_VER=0.13.0
@@ -29,7 +31,8 @@ wget -q -P ${KAFKA_HOME}/libs/ https://packages.confluent.io/maven/io/confluent/
 wget -q -P ${KAFKA_HOME}/libs/ https://packages.confluent.io/maven/io/confluent/common-utils/${CONFL_KAFKA_VERSION}/common-utils-${CONFL_KAFKA_VERSION}.jar && \
 wget -q -P ${KAFKA_HOME}/libs/ https://packages.confluent.io/maven/io/confluent/common-config/${CONFL_KAFKA_VERSION}/common-config-${CONFL_KAFKA_VERSION}.jar && \
 wget -q -P ${KAFKA_HOME}/libs/ https://repo1.maven.org/maven2/org/apache/avro/avro/${AVRO_KAFKA_VERSION}/avro-${AVRO_KAFKA_VERSION}.jar && \
-wget -q -P ${KAFKA_HOME}/libs/ https://repo1.maven.org/maven2/mysql/mysql-connector-java/${MYSQL_CON_KAFKA_VERSION}/mysql-connector-java-${MYSQL_CON_KAFKA_VERSION}.jar && \
+wget -q -P ${KAFKA_HOME}/libs/ https://repo1.maven.org/maven2/mysql/mysql-connector-java/${MYSQL_JDBC_VERSION}/mysql-connector-java-${MYSQL_JDBC_VERSION}.jar && \
+wget -q -P ${KAFKA_HOME}/libs/ https://repo1.maven.org/maven2/org/postgresql/postgresql/${PGSQL_JDBC_VER}/postgresql-${PGSQL_JDBC_VER}.jar && \
 wget -q -P ${KAFKA_HOME}/libs/ https://repo1.maven.org/maven2/org/antlr/antlr4-runtime/4.7.2/antlr4-runtime-4.7.2.jar && \
 wget -q -P ${KAFKA_HOME}/libs/ https://repo1.maven.org/maven2/io/debezium/debezium-api/${DEBEZIUM_CON_KAFKA_VERSION}/debezium-api-${DEBEZIUM_CON_KAFKA_VERSION}.jar && \
 wget -q -P ${KAFKA_HOME}/libs/ https://repo1.maven.org/maven2/io/debezium/debezium-core/${DEBEZIUM_CON_KAFKA_VERSION}/debezium-core-${DEBEZIUM_CON_KAFKA_VERSION}.jar && \
