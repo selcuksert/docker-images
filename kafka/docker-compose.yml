@@ -139,6 +139,8 @@ services:
       - POSTGRES_PASSWORD=db1234
       - POSTGRES_DB=kafkaconnect
       - TZ=Europe/Istanbul
+    ports:
+      - "5432:5432"
 #    command: --default-authentication-plugin=mysql_native_password
   kafkaconnect:
     build: 
@@ -160,6 +162,7 @@ services:
       - schemaregistry
     environment:
       - TOPIC_NAMES=itemsdb
+      - PK_FIELDS=id
       - DB_NAME=kafkaconnect
       - CONNECTION_USER=dbuser
       - CONNECTION_PASSWORD=db1234

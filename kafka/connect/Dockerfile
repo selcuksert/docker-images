@@ -20,8 +20,7 @@ ENV KAFKA_HOME=${KAFKA_ROOT}/kafka_${ARCH_KAFKA_VERSION}
 ENV PATH=${PATH}:${KAFKA_HOME}/bin
 ENV TZ=Europe/Istanbul
 
-ADD ./scripts/*.sh ${KAFKA_HOME}/bin/
-ADD ./config/*.properties ${KAFKA_HOME}/config/
+RUN mkdir -p ${KAFKA_HOME}
 
 RUN apt-get update && apt-get install -y wget netcat && wget -q ${KAFKA_BIN_URL} && tar -xzf kafka_${ARCH_KAFKA_VERSION}.tgz -C ${KAFKA_ROOT}
 
@@ -43,6 +42,11 @@ wget -q -P ${KAFKA_HOME}/libs/ https://repo1.maven.org/maven2/com/github/shyiko/
 RUN mkdir ${KAFKA_HOME}/plugins/ && \
 wget -q -P ${KAFKA_HOME}/plugins/ https://packages.confluent.io/maven/io/confluent/kafka-connect-jdbc/${CONFL_KAFKA_VERSION}/kafka-connect-jdbc-${CONFL_KAFKA_VERSION}.jar && \
 wget -q -P ${KAFKA_HOME}/plugins/ https://repo1.maven.org/maven2/io/debezium/debezium-connector-mysql/${DEBEZIUM_CON_KAFKA_VERSION}/debezium-connector-mysql-${DEBEZIUM_CON_KAFKA_VERSION}.jar
+
+ADD ./scripts/*.sh ${KAFKA_HOME}/bin/
+
+ADD ./config/*.properties ${KAFKA_HOME}/config/
+
 WORKDIR ${KAFKA_HOME}/bin
 
 ENTRYPOINT ["start.sh"]
