@@ -161,13 +161,9 @@ services:
       - dbservice
       - schemaregistry
     environment:
-      - TOPIC_NAMES=itemsdb
-      - PK_FIELDS=id
       - DB_NAME=kafkaconnect
       - CONNECTION_USER=dbuser
       - CONNECTION_PASSWORD=db1234
-      - KEY_CONVERTER=org.apache.kafka.connect.converters.LongConverter
-      - VALUE_CONVERTER=io.confluent.connect.avro.AvroConverter
     networks:
       - kafka-net
     ports:
