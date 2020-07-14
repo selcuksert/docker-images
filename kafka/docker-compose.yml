@@ -161,9 +161,13 @@ services:
       - dbservice
       - schemaregistry
     environment:
+      - TOPIC_NAMES=$TOPIC_NAMES
+      - PK_FIELDS=$PK_FIELDS
       - DB_NAME=kafkaconnect
       - CONNECTION_USER=dbuser
       - CONNECTION_PASSWORD=db1234
+      - KEY_CONVERTER=$KEY_CONVERTER
+      - VALUE_CONVERTER=$VALUE_CONVERTER
     networks:
       - kafka-net
     ports:
