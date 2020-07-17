@@ -52,7 +52,7 @@
       <property name="org.kie.server.user" value="KIE_SRV_USER"/>
       <property name="org.kie.server.pwd" value="KIE_SRV_PASS"/>
       <property name="org.kie.server.id" value="rhpam-kie-server"/>
-      <property name="kie.maven.settings.custom" value="/usr/share/java/maven-3/conf/settings.xml"/>
+      <property name="kie.maven.settings.custom" value="/usr/share/maven/conf/settings.xml"/>
    </system-properties>
    <management>
       <security-realms>

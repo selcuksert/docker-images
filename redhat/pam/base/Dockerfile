@@ -12,7 +12,6 @@ ARG EAP_VERSION=7.2
 ENV HOME /opt/jboss
 ENV JBOSS_HOME $HOME/jboss-eap-${EAP_VERSION}
 ENV TZ Europe/Istanbul
-ENV M2_HOME /usr/share/java/maven-3
 ENV PATH ${PATH}:${JBOSS_HOME}/bin
 
 RUN apt-get update && apt-get install -y git netcat unzip
@@ -33,7 +32,7 @@ ADD ./package/rhpam-${PAM_VERSION}-kie-server-ee8.zip $HOME/package/
 ADD ./package/rhpam-${PAM_VERSION}-add-ons.zip $HOME/package/
 
 # ADD Config Files
-ADD ./config/settings.xml /usr/share/java/maven-3/conf/settings.xml
+ADD ./config/settings.xml /usr/share/maven/conf/settings.xml
 
 USER root
 
