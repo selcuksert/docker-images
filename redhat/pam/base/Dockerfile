@@ -1,6 +1,9 @@
-FROM openjdk:8-alpine
+FROM maven:3-openjdk-8-slim
 
-LABEL Author="Selcuk SERT" mail="selcuk.sert@gmail.com"
+LABEL author="Selcuk SERT"
+LABEL mail="selcuk.sert@gmail.com"
+LABEL version="1.0"
+LABEL description="Base image for RedHat Process Automation Manager"
 
 ARG PAM_VERSION=7.7.0
 ARG EAP_VERSION=7.2
@@ -12,12 +15,10 @@ ENV TZ Europe/Istanbul
 ENV M2_HOME /usr/share/java/maven-3
 ENV PATH ${PATH}:${JBOSS_HOME}/bin
 
-RUN apk --update add git bash maven netcat-openbsd && \
-    rm -rf /var/lib/apt/lists/* && \
-    rm /var/cache/apk/*
+RUN apt-get update && apt-get install -y git netcat unzip
 
-RUN addgroup -g 1000 jboss && \
-adduser -u 1000 -G jboss -h $HOME -D jboss && \
+RUN addgroup --gid 1000 jboss && \
+adduser --system --gid 1000 --home $HOME jboss && \
 chmod 755 $HOME
 
 # Update Permissions
