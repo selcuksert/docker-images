@@ -32,3 +32,5 @@ build/
 
 ### Installation Files ###
 *.zip
+
+*.jar

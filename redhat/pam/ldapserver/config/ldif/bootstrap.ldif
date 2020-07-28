@@ -38,7 +38,7 @@ objectClass: inetOrgPerson
 uid: kieserver
 sn: Server
 cn: Kie
-userPassword: kieserver2!
+userPassword: kieserver1!
 mail: kieserver@corp.com
 
 dn: uid=caseuser,ou=People,dc=corp,dc=com

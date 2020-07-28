@@ -57,6 +57,30 @@ services:
       - openldap
     ports:
        - "3000:3000"
+  kieapp:
+    image: openjdk:8-slim
+    container_name: kieapp
+    networks:
+      - pam-net
+    environment:
+      - TZ=Europe/Istanbul
+      - CONTROLLER_HOST=pam
+      - CONTROLLER_PORT=8080
+      - APP_HOST=kieapp
+      - APP_PORT=8090
+      - CONTROLLER_USER=pamadmin
+      - CONTROLLER_PWD=redhatpam1!
+      - KIE_USER=kieserver
+      - KIE_PWD=kieserver1!
+      - KIE_MODE=production
+    depends_on:
+      - pam
+    volumes:
+      - ./kieapp/jar:/home/jar
+      - ./kieapp/scripts:/home/scripts
+    ports:
+       - "8090:8090"
+    entrypoint: /home/scripts/start.sh
   mavenserver:
     image: docker.bintray.io/jfrog/artifactory-oss:6.20.0
     container_name: mavenserver
