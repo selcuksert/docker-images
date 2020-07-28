@@ -22,7 +22,6 @@ services:
       - "8001:8001"
     depends_on:
       - openldap
-      - gitserver
       - mavenserver
     command: ["openldap", "389", "uid=pamadmin,ou=People,dc=corp,dc=com", "redhatpam1!", "pamadmin", "redhatpam1!", "kieserver", "kieserver2!", "mavenserver", "8081"]
   openldap:
