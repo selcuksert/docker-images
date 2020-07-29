@@ -52,6 +52,28 @@ cn: Case
 userPassword: redhatpam1!
 mail: caseuser@corp.com
 
+dn: uid=hruser,ou=People,dc=corp,dc=com
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+uid: hruser
+sn: User
+cn: HR
+userPassword: redhatpam1!
+mail: hruser@corp.com
+
+dn: uid=pmuser,ou=People,dc=corp,dc=com
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+uid: pmuser
+sn: User
+cn: PM
+userPassword: redhatpam1!
+mail: pmuser@corp.com
+
 dn: uid=casemanager,ou=People,dc=corp,dc=com
 objectClass: top
 objectClass: person
@@ -139,3 +161,15 @@ objectClass: groupOfUniqueNames
 cn: supplier
 uniqueMember: uid=pamadmin,ou=People,dc=corp,dc=com
 uniqueMember: uid=casesupplier,ou=People,dc=corp,dc=com
+
+dn: cn=hr,ou=Groups,dc=corp,dc=com
+objectClass: top
+objectClass: groupOfUniqueNames
+cn: hr
+uniqueMember: uid=hruser,ou=People,dc=corp,dc=com
+
+dn: cn=pm,ou=Groups,dc=corp,dc=com
+objectClass: top
+objectClass: groupOfUniqueNames
+cn: pm
+uniqueMember: uid=pmuser,ou=People,dc=corp,dc=com
