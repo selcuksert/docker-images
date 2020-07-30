@@ -74,6 +74,7 @@ services:
       - KIE_MODE=production
     depends_on:
       - pam
+      - mavenserver
     volumes:
       - ./kieapp/jar:/home/jar
       - ./kieapp/scripts:/home/scripts
