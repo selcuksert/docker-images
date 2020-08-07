@@ -5,8 +5,8 @@ LABEL mail="selcuk.sert@gmail.com"
 LABEL version="1.0"
 LABEL description="Base image for RedHat Process Automation Manager"
 
-ARG PAM_VERSION=7.7.0
-ARG EAP_VERSION=7.2
+ARG PAM_VERSION=7.8.0
+ARG EAP_VERSION=7.3
 
 # Environment Variables
 ENV HOME /opt/jboss
