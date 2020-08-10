@@ -23,7 +23,7 @@ services:
     depends_on:
       - openldap
       - mavenserver
-    command: ["openldap", "389", "uid=pamadmin,ou=People,dc=corp,dc=com", "redhatpam1!", "pamadmin", "redhatpam1!", "kieserver", "kieserver2!", "mavenserver", "8081"]
+    command: ["openldap", "389", "uid=pamadmin,ou=People,dc=corp,dc=com", "redhatpam1!", "pamadmin", "redhatpam1!", "kieserver", "kieserver1!", "mavenserver", "8081"]
   openldap:
     container_name: openldap
     image: osixia/openldap:1.3.0

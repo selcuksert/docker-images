@@ -107,6 +107,8 @@ objectClass: top
 objectClass: groupOfUniqueNames
 cn: analyst
 uniqueMember: uid=pamadmin,ou=People,dc=corp,dc=com
+uniqueMember: uid=hruser,ou=People,dc=corp,dc=com
+uniqueMember: uid=pmuser,ou=People,dc=corp,dc=com
 
 dn: cn=admin,ou=Groups,dc=corp,dc=com
 objectClass: top
@@ -129,6 +131,8 @@ uniqueMember: uid=pamadmin,ou=People,dc=corp,dc=com
 uniqueMember: uid=caseuser,ou=People,dc=corp,dc=com
 uniqueMember: uid=casemanager,ou=People,dc=corp,dc=com
 uniqueMember: uid=casesupplier,ou=People,dc=corp,dc=com
+uniqueMember: uid=hruser,ou=People,dc=corp,dc=com
+uniqueMember: uid=pmuser,ou=People,dc=corp,dc=com
 
 dn: cn=kie-server,ou=Groups,dc=corp,dc=com
 objectClass: top
@@ -162,14 +166,14 @@ cn: supplier
 uniqueMember: uid=pamadmin,ou=People,dc=corp,dc=com
 uniqueMember: uid=casesupplier,ou=People,dc=corp,dc=com
 
-dn: cn=hr,ou=Groups,dc=corp,dc=com
+dn: cn=HR,ou=Groups,dc=corp,dc=com
 objectClass: top
 objectClass: groupOfUniqueNames
-cn: hr
+cn: HR
 uniqueMember: uid=hruser,ou=People,dc=corp,dc=com
 
-dn: cn=pm,ou=Groups,dc=corp,dc=com
+dn: cn=PM,ou=Groups,dc=corp,dc=com
 objectClass: top
 objectClass: groupOfUniqueNames
-cn: pm
+cn: PM
 uniqueMember: uid=pmuser,ou=People,dc=corp,dc=com

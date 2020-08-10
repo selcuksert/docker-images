@@ -54,7 +54,6 @@ rm -rf $HOME/package
 	
 # ADD Config Files
 ADD ./config/standalone-full.xml $JBOSS_HOME/standalone/configuration/standalone-full-param.xml
-ADD ./config/userinfo.properties $JBOSS_HOME/standalone/deployments/business-central.war/WEB-INF/classes/
 
 # ADD scripts
 ADD ./scripts/docker-start.sh ${JBOSS_HOME}/bin/
@@ -63,8 +62,7 @@ ADD ./scripts/docker-start.sh ${JBOSS_HOME}/bin/
 USER root
 
 # Fix permissions on support files
-RUN chown -R jboss:jboss $JBOSS_HOME/standalone/configuration/standalone-full.xml $JBOSS_HOME/standalone/deployments/business-central.war/WEB-INF/classes/userinfo.properties
-
+RUN chown -R jboss:jboss $JBOSS_HOME/standalone/configuration/standalone-full.xml 
 # Run as jboss user
 USER jboss
 

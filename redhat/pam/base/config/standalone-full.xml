@@ -520,10 +520,11 @@
                         <module-option value="cn" name="roleAttributeID"/>
                         <module-option value="0" name="roleRecursion"/>
                         <module-option value="false" name="roleAttributeIsDN"/>
-                        <module-option value="distinguishedName" name="distinguishedNameAttribute"/>
+                        <module-option value="dn" name="distinguishedNameAttribute"/>
                         <module-option value="follow" name="java.naming.referral"/>
                         <module-option value="SUBTREE_SCOPE" name="searchScope"/>
                     </login-module>
+					<login-module xmlns="" code="org.kie.security.jaas.KieLoginModule" flag="optional" module="deployment.business-central.war"/>
                 </authentication>
             </security-domain>
          </security-domains>
