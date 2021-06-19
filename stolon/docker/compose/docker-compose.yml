@@ -1,0 +1,133 @@
+version: '3'
+
+services:
+  etcd-01:
+    build:
+      context: ./etcd
+      dockerfile: Dockerfile
+    image: custom/etcd
+    hostname: etcd-01
+    environment:
+      NAME: etcd-01
+      CLUSTER_LIST: ${CLUSTER_LIST}
+      TZ: Europe/Istanbul
+    volumes:
+      - etcd-01-vol:/data.etcd
+  etcd-02:
+    build:
+      context: ./etcd
+      dockerfile: Dockerfile
+    image: custom/etcd
+    hostname: etcd-02
+    environment:
+      NAME: etcd-02
+      CLUSTER_LIST: ${CLUSTER_LIST}
+      TZ: Europe/Istanbul
+    volumes:
+      - etcd-02-vol:/data.etcd
+  etcd-03:
+    build:
+      context: ./etcd
+      dockerfile: Dockerfile
+    image: custom/etcd
+    hostname: etcd-03
+    environment:
+      NAME: etcd-03
+      CLUSTER_LIST: ${CLUSTER_LIST}
+      TZ: Europe/Istanbul
+    volumes:
+      - etcd-03-vol:/data.etcd
+  sentinel:
+    build:
+      context: ./stolon/base
+      dockerfile: Dockerfile
+    image: custom/stolon/base
+    scale: 2
+    environment:
+      ETCD_LIST: ${ETCD_LIST}
+      STORE_ENDPOINTS: ${STORE_ENDPOINTS}
+      LOG_LEVEL: ${LOG_LEVEL}
+      CLUSTER_NAME: ${CLUSTER_NAME}
+      PROFILE: sentinel
+      TZ: Europe/Istanbul
+  keeper1:
+    build:
+      context: ./stolon/keeper
+      dockerfile: Dockerfile
+    container_name: keeper1
+    image: custom/stolon/keeper
+    hostname: keeper1
+    environment:
+      ETCD_LIST: ${ETCD_LIST}
+      STORE_ENDPOINTS: ${STORE_ENDPOINTS}
+      LOG_LEVEL: ${LOG_LEVEL}
+      CLUSTER_NAME: ${CLUSTER_NAME}
+      REPLICATION_USER: ${REPLICATION_USER}
+      REPLICATION_PASS: ${REPLICATION_PASS}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+      PG_DATA: ${PG_DATA}
+      TZ: Europe/Istanbul
+    volumes:
+      - keeper-01-vol:${PG_DATA}
+  keeper2:
+    build:
+      context: ./stolon/keeper
+      dockerfile: Dockerfile
+    container_name: keeper2
+    image: custom/stolon/keeper
+    hostname: keeper2
+    environment:
+      ETCD_LIST: ${ETCD_LIST}
+      STORE_ENDPOINTS: ${STORE_ENDPOINTS}
+      LOG_LEVEL: ${LOG_LEVEL}
+      CLUSTER_NAME: ${CLUSTER_NAME}
+      REPLICATION_USER: ${REPLICATION_USER}
+      REPLICATION_PASS: ${REPLICATION_PASS}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+      PG_DATA: ${PG_DATA}
+      PROFILE: keeper
+      TZ: Europe/Istanbul
+    volumes:
+      - keeper-02-vol:${PG_DATA}
+  proxy:
+    build:
+      context: ./stolon/base
+      dockerfile: Dockerfile
+    image: custom/stolon/base
+    scale: 2
+    environment:
+      STORE_ENDPOINTS: ${STORE_ENDPOINTS}
+      LOG_LEVEL: ${LOG_LEVEL}
+      CLUSTER_NAME: ${CLUSTER_NAME}
+      PROFILE: proxy
+      TZ: Europe/Istanbul
+  pgadmin:
+    image: dpage/pgadmin4:5.4
+    container_name: pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@corp.com
+      PGADMIN_DEFAULT_PASSWORD: Pgadm1234!
+      PGADMIN_LISTEN_ADDRESS: 0.0.0.0
+      PGADMIN_LISTEN_PORT: 8090
+      TZ: Europe/Istanbul
+    ports:
+      - 8090:8090
+
+volumes:
+  keeper-01-vol:
+    name: keeper-01-vol
+    driver: local
+  keeper-02-vol:
+    name: keeper-02-vol
+    driver: local
+  etcd-01-vol:
+    name: etcd-01-vol
+    driver: local
+  etcd-02-vol:
+    name: etcd-02-vol
+    driver: local
+  etcd-03-vol:
+    name: etcd-03-vol
+    driver: local
