@@ -42,7 +42,8 @@ services:
       context: ./stolon/base
       dockerfile: Dockerfile
     image: custom/stolon/base
-    scale: 2
+    deploy:
+      replicas: 2
     environment:
       ETCD_LIST: ${ETCD_LIST}
       STORE_ENDPOINTS: ${STORE_ENDPOINTS}
@@ -96,7 +97,8 @@ services:
       context: ./stolon/base
       dockerfile: Dockerfile
     image: custom/stolon/base
-    scale: 2
+    deploy:
+      replicas: 2
     environment:
       STORE_ENDPOINTS: ${STORE_ENDPOINTS}
       LOG_LEVEL: ${LOG_LEVEL}

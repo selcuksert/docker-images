@@ -14,4 +14,4 @@ RUN apt-get update && apt-get install -y wget
 RUN wget -P ${ETCD_HOME} https://github.com/etcd-io/etcd/releases/download/${ETCD_VERSION}/etcd-${ETCD_VERSION}-linux-amd64.tar.gz && \
 tar -C ${ETCD_HOME} -xvzf ${ETCD_HOME}/etcd-${ETCD_VERSION}-linux-amd64.tar.gz
 
-ENTRYPOINT start
+ENTRYPOINT ["bash", "-c", "start"]

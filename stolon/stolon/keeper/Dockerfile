@@ -32,4 +32,4 @@ RUN make
 RUN groupadd -g 1000 stolon && \
 useradd -g 1000 -u 1000 stolon
 
-ENTRYPOINT start
+ENTRYPOINT ["bash", "-c", "start"]
